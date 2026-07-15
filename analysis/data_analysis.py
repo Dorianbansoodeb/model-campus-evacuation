@@ -1,5 +1,6 @@
 import re
 import argparse
+import json
 import os
 import csv
 from collections import defaultdict
@@ -246,6 +247,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("log_csv", help="Path to scenario log CSV")
     parser.add_argument("--dt", type=float, default=1.0, help="Sampling interval for curve/heatmap")
+    parser.add_argument("--scenario-manifest", help="Path to scenario JSON manifest for campus exits")
     args = parser.parse_args()
 
     # Due to how logging is done, exit time = when the vehicle finished the last road segment that connect to outiside
@@ -255,6 +257,11 @@ if __name__ == "__main__":
         "P5 & Stadium Way to Bronson Ave & Stadium Way",
         "Roundabout to Bronson Ave & University Dr"
     }
+
+    if args.scenario_manifest:
+        with open(args.scenario_manifest, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+        exits = set(manifest["campus_exits"])
 
     results = analyze_log(args.log_csv, exit_models=exits, dt_sample=args.dt)
 

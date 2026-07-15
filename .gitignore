@@ -21,3 +21,7 @@ get-pip.py
 
 # Local environments
 .env
+
+# Simulation outputs
+output_data/
+/output_data

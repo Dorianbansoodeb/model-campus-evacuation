@@ -7,6 +7,7 @@
 #include "include/data_structures/od_datum.hpp"
 #include "include/data_structures/parking_lot_schedule.hpp"
 #include "include/coupled_models/carleton_university_campus.hpp"
+#include "include/coupled_models/carleton_university_campus_scenario_07.hpp"
 #include "include/io/load_data.hpp"
 
 using namespace cadmium;
@@ -21,6 +22,7 @@ int main(int argc, char* argv[]) {
         ("od-data", "Origin destination data file name", 
          cxxopts::value<std::string>()->default_value("input_data/od_data/simple_poll_results.csv"))
         ("m,max-sim-time", "Max simulation time", cxxopts::value<double>()->default_value("15000.0"))
+        ("scenario", "Scenario preset name (e.g. scenario_07)", cxxopts::value<std::string>()->default_value(""))
         ("h,help", "Print usage")
         ;
 
@@ -34,13 +36,27 @@ int main(int argc, char* argv[]) {
     std::string outputFile = result["output"].as<std::string>();
     std::string odFile = result["od-data"].as<std::string>();
     double maxSimulationTime = result["max-sim-time"].as<double>();
+    std::string scenario = result["scenario"].as<std::string>();
+
+    if (scenario == "scenario_07") {
+        parkingLotSchedulesFile = "input_data/parking_lot_schedules/scenario_07.csv";
+        odFile = "input_data/od_data/scenario_07_bronson.csv";
+    }
 
     // Load data
     std::vector<ParkingLotSchedule> schedules = loadParkingLotSchedules(parkingLotSchedulesFile);
     std::vector<ODDatum> odData = loadODData(odFile);
 
     // Configure model & simulator
-    auto model = std::make_shared<CarletonUniversityCampusCoupled>("Carleton University Campus", schedules, odData);
+    std::shared_ptr<Coupled> model;
+    if (scenario == "scenario_07") {
+        std::vector<RoutingOverride> routingOverrides =
+            loadRoutingOverrides("input_data/scenarios/scenario_07_routing_overrides.csv");
+        model = std::make_shared<CarletonUniversityCampusScenario07Coupled>(
+            "Carleton University Campus", schedules, odData, routingOverrides);
+    } else {
+        model = std::make_shared<CarletonUniversityCampusCoupled>("Carleton University Campus", schedules, odData);
+    }
     auto rootCoordinator = cadmium::RootCoordinator(model);
     if (outputFile.empty()) {
         rootCoordinator.setLogger<STDOUTLogger>(",");

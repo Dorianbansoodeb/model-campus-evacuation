@@ -60,4 +60,23 @@ std::unordered_map<std::string, int> loadRoadSpeeds(std::string filepath) {
     return out;
 }
 
+#include "../data_structures/routing_override.hpp"
+
+std::vector<RoutingOverride> loadRoutingOverrides(std::string filepath) {
+    rapidcsv::Document doc(filepath);
+    std::vector<std::string> intersections = doc.GetColumn<std::string>("intersection");
+    std::vector<std::string> srcs = doc.GetColumn<std::string>("src");
+    std::vector<std::string> dests = doc.GetColumn<std::string>("dest");
+
+    std::vector<RoutingOverride> overrides;
+    for (int i = 0; i < (int)intersections.size(); i++) {
+        RoutingOverride override;
+        override.intersection = intersections[i];
+        override.src = srcs[i];
+        override.dest = dests[i];
+        overrides.push_back(override);
+    }
+    return overrides;
+}
+
 #endif // LOAD_DATA_HPP
