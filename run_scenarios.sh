@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Runs all scenarios as a batch.
+# Each scenario writes to results/scenario_XX/ (log + processed CSVs + charts).
 
 declare -a scenarios=(
     "scenario_01"
@@ -12,16 +13,19 @@ declare -a scenarios=(
 )
 
 for s in "${scenarios[@]}"; do
-    ./bin/campus_evacuation -i input_data/parking_lot_schedules/${s}.csv -o output_data/raw/${s}_log.csv
-    python analysis/data_analysis.py output_data/raw/${s}_log.csv
-    cp -v output_data/processed/heatmap_matrix.csv output_data/processed/${s}_heatmap_matrix.csv
-    python analysis/visualize_processed.py output_data/processed
-    cp -v output_data/processed/heatmap_matrix.png output_data/processed/${s}_heatmap.png
+    out_dir="results/${s}"
+    mkdir -p "${out_dir}"
+    log="${out_dir}/${s}_log.csv"
+    ./bin/campus_evacuation -i "input_data/parking_lot_schedules/${s}.csv" -o "${log}"
+    python analysis/data_analysis.py "${log}"
+    python analysis/visualize_processed.py "${out_dir}"
 done
 
 # Scenario 07: P3 Bronson exit + P4 emergency link r28
-./bin/campus_evacuation --scenario scenario_07 -o output_data/raw/scenario_07_log.csv
-python analysis/data_analysis.py output_data/raw/scenario_07_log.csv --scenario-manifest input_data/scenarios/scenario_07.json
-cp -v output_data/processed/heatmap_matrix.csv output_data/processed/scenario_07_heatmap_matrix.csv
-python analysis/visualize_processed.py output_data/processed
-cp -v output_data/processed/heatmap_matrix.png output_data/processed/scenario_07_heatmap.png
+s="scenario_07"
+out_dir="results/${s}"
+mkdir -p "${out_dir}"
+log="${out_dir}/${s}_log.csv"
+./bin/campus_evacuation --scenario scenario_07 -o "${log}"
+python analysis/data_analysis.py "${log}" --scenario-manifest input_data/scenarios/scenario_07.json
+python analysis/visualize_processed.py "${out_dir}"

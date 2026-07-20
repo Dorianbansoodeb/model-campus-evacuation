@@ -9,8 +9,7 @@ from scp import SCPClient
 
 PARKING_LOT_SCHEDULES_DIR = 'input_data/parking_lot_schedules/'
 DEFAULT_PARKING_LOT_SCHEDULE = PARKING_LOT_SCHEDULES_DIR + 'default.csv'
-RAW_OUTPUT_DATA_DIR = 'output_data/raw/'
-PROCESSED_OUTPUT_DATA_DIR = 'output_data/processed/'
+RESULTS_DIR = 'results/'
 PARKING_LOT_ID_INDEX = 0
 DELAY_INDEX = 1
 YES = 'y'
@@ -67,7 +66,9 @@ def run_scenario(scenario_name):
     cmd = input(f'Would you like to run a simulation of your scenario? [{YES}/n]\n')
     if cmd == YES:
         parking_lot_schedule_fp = PARKING_LOT_SCHEDULES_DIR + scenario_name + '.csv'
-        log_fp = RAW_OUTPUT_DATA_DIR + scenario_name + '_log.csv'
+        out_dir = RESULTS_DIR + scenario_name + '/'
+        os.makedirs(out_dir, exist_ok=True)
+        log_fp = out_dir + scenario_name + '_log.csv'
         sim_model_fp = '/bin/campus_evacuation'
 
         if os.path.isfile(sim_model_fp):
@@ -114,26 +115,17 @@ def run_scenario(scenario_name):
         analyze_scenario(scenario_name)
 
 def analyze_scenario(scenario_name):
-    log_fp = RAW_OUTPUT_DATA_DIR + scenario_name + '_log.csv'
-    default_heatmap_matrix_fp = PROCESSED_OUTPUT_DATA_DIR + 'heatmap_matrix.csv'
-    heatmap_matrix_fp = PROCESSED_OUTPUT_DATA_DIR + scenario_name + '_heatmap_matrix.csv'
-    default_heatmap_fp = PROCESSED_OUTPUT_DATA_DIR + 'heatmap_matrix.png'
-    heatmap_fp = PROCESSED_OUTPUT_DATA_DIR + scenario_name + '_heatmap.png'
+    out_dir = RESULTS_DIR + scenario_name + '/'
+    log_fp = out_dir + scenario_name + '_log.csv'
+    heatmap_fp = out_dir + 'heatmap_matrix.png'
 
     args = ('python', 'analysis/data_analysis.py', log_fp)
-    p = subprocess.run(args) 
+    p = subprocess.run(args)
+    p.check_returncode()
 
-    args = ('cp', '-v', default_heatmap_matrix_fp, heatmap_matrix_fp)
-    p = subprocess.run(args) 
-
-    args = ('python', 'analysis/visualize_processed.py', 'output_data/processed')
-    p = subprocess.run(args) 
-
-    args = ('cp', '-v', default_heatmap_fp, heatmap_fp)
-    p = subprocess.run(args) 
-
-    args = ('cp', '-v', default_heatmap_fp, heatmap_fp)
-    p = subprocess.run(args) 
+    args = ('python', 'analysis/visualize_processed.py', out_dir)
+    p = subprocess.run(args)
+    p.check_returncode()
 
     import webbrowser, os
     webbrowser.open('file://' + os.path.realpath(heatmap_fp)) 

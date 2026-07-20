@@ -91,7 +91,7 @@ def plot_heatmap(times, roads, M, out_path: str, max_roads_label=20):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("processed_dir", help="Path to output_data/processed")
+    ap.add_argument("processed_dir", help="Path to scenario results folder (e.g. results/scenario_01)")
     ap.add_argument("--summary", default="summary.csv")
     ap.add_argument("--curve", default="evac_curve.csv")
     ap.add_argument("--heat", default="heatmap_matrix.csv")

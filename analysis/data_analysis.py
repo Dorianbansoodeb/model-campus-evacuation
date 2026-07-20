@@ -247,6 +247,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("log_csv", help="Path to scenario log CSV")
     parser.add_argument("--dt", type=float, default=1.0, help="Sampling interval for curve/heatmap")
+    parser.add_argument(
+        "--output-dir",
+        help="Folder for summary/curve/heatmap CSVs (default: same folder as log_csv)",
+    )
     parser.add_argument("--scenario-manifest", help="Path to scenario JSON manifest for campus exits")
     args = parser.parse_args()
 
@@ -274,5 +278,6 @@ if __name__ == "__main__":
     print("Cars/min exiting campus:", results["cars_per_min"])
     print("Curve sample:", results["curve"][:10])
 
-    processed_dir = "output_data/processed"
+    processed_dir = args.output_dir or os.path.dirname(os.path.abspath(args.log_csv))
     write_processed_outputs(results, processed_dir)
+    print("Wrote processed outputs to:", processed_dir)
