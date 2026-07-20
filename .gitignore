@@ -25,3 +25,4 @@ get-pip.py
 # Simulation outputs
 output_data/
 /output_data
+/output_data/processed

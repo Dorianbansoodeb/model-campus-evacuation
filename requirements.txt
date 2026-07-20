@@ -9,3 +9,5 @@ ffmpeg
 paramiko
 python-dotenv
 scp
+jupyter
+ipykernel
