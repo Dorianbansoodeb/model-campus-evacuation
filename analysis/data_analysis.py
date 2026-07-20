@@ -22,6 +22,23 @@ for row in gdf.itertuples(index=False):
     for sr in sim_roads:
         road_length_m[sr.strip()] += float(row.seg_len_m)
 
+# Some road names (notably scenario 07's r28) can be missing from the
+# carleton_campus_car_roads.geojson `sim_roads` properties due to naming drift.
+# Load authoritative lengths from sim_road_lengths.csv as a fallback.
+sim_road_length_m = {}
+sim_len_path = "data_creation/sim_road_lengths.csv"
+if os.path.exists(sim_len_path):
+    with open(sim_len_path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            road = (row.get("ROAD") or "").strip()
+            if not road:
+                continue
+            try:
+                sim_road_length_m[road] = float(row.get("LENGTH_M", 0.0))
+            except ValueError:
+                continue
+
 # Regular expressions to extract vehicle ID and destination from message
 VEH_RE = re.compile(r"id=(\d+)")
 DEST_RE = re.compile(r"dest=([^}]*)")
@@ -182,10 +199,17 @@ def analyze_log(path: str, exit_models = None, dt_sample: float = 1.0):
             road_occ[road] += delta
             j += 1
 
-        EPS = 1e-9
         for road in roads:
-            L = max(road_length_m.get(road, 0.0), EPS)  # meters
-            cars_per_100m = road_occ[road] / (L / 100.0)
+            L_geo = road_length_m.get(road, 0.0)
+            L_sim = sim_road_length_m.get(road, 0.0)
+            # Prefer geojson length if present; otherwise fall back to sim lengths CSV.
+            L = L_geo if L_geo > 0.0 else L_sim  # meters
+
+            if L <= 0.0:
+                # Avoid dividing by EPS and generating astronomically large values.
+                cars_per_100m = 0.0
+            else:
+                cars_per_100m = road_occ[road] / (L / 100.0)
             heat[road].append(cars_per_100m)
 
     return {

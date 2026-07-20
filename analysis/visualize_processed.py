@@ -68,10 +68,11 @@ def plot_evac_curve(times, occ, summary_dict, out_path: str):
     plt.savefig(out_path, dpi=200)
     plt.close()
 
-def plot_heatmap(times, roads, M, out_path: str, max_roads_label=20):
-    # M is (T, R)
-    # roads on Y (rows), time on X (cols) by transposing.
-    plt.figure(figsize=(12, 6))
+def plot_heatmap(times, roads, M, out_path: str):
+    # M is (T, R); roads on Y (rows), time on X (cols) by transposing.
+    # Scale figure height so every road label has ~0.35 inches of space.
+    fig_h = max(6, len(roads) * 0.35)
+    plt.figure(figsize=(12, fig_h))
     plt.imshow(M.T, aspect="auto", origin="lower", cmap="plasma", vmax=20)
 
     plt.xlabel("Time (s)")
@@ -79,11 +80,7 @@ def plot_heatmap(times, roads, M, out_path: str, max_roads_label=20):
     plt.title("Campus Evacuation Heatmap")
     plt.colorbar(label="Vehicles per 100 m")
 
-    #TODO: with too many long road names, displays should be switched to the R values in documentation
-    if len(roads) <= max_roads_label:
-        plt.yticks(range(len(roads)), roads, fontsize=7)
-    else:
-        plt.yticks([])
+    plt.yticks(range(len(roads)), roads, fontsize=7)
 
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
