@@ -2,8 +2,8 @@ ORIGIN,DEST,FLOW
 Campus Ave & Library Rd,Campus Ave & Library Rd to Campus Ave & P2,1
 Campus Ave & Library Rd,Campus Ave & Library Rd to Library Rd & P1,3
 Campus Ave & P2,Campus Ave & P2 to Campus Ave & University Dr,4
-Campus Ave & P6,Campus Ave & P6 to Campus Ave & Library Rd,1
-Campus Ave & P6,Campus Ave & P6 to Roundabout,3
+Campus Ave & P6,Campus Ave & P6 to Campus Ave & Library Rd,4
+Campus Ave & P6,Campus Ave & P6 to Roundabout,0
 Campus Ave & University Dr,Campus Ave & University Dr to Library Rd & University Dr,3
 Campus Ave & University Dr,Campus Ave & University Dr to Raven Rd & University Dr,1
 Library Rd & P1,Library Rd & P1 to Campus Ave & Library Rd,3
@@ -11,16 +11,15 @@ Library Rd & P1,Library Rd & P1 to Library Rd & University Dr,1
 Library Rd & University Dr,Library Rd & University Dr to Campus Ave & University Dr,0
 Library Rd & University Dr,Library Rd & University Dr to Colonel By Dr & University Dr,4
 Library Rd & University Dr,Library Rd & University Dr to Library Rd & P1,0
-P3 & Raven Rd,P3 & Raven Rd to Raven Rd & University Dr,0
-P3 & Raven Rd,P3 & Raven Rd to Bronson Ave & Raven Rd,4
-P4 & University Dr,P4 & University Dr to Raven Rd & University Dr,4
-P4 & University Dr,P4 & University Dr to Stadium Way & University Dr,0
+P3 & Raven Rd,P3 & Raven Rd to Raven Rd & University Dr,4
+P3 & Raven Rd,P3 & Raven Rd to Bronson Ave & Raven Rd,0
+P4 & University Dr,P4 & University Dr to Raven Rd & University Dr,1
+P4 & University Dr,P4 & University Dr to Stadium Way & University Dr,3
 P5 & Stadium Way,P5 & Stadium Way to Bronson Ave & Stadium Way,1
 P5 & Stadium Way,P5 & Stadium Way to Stadium Way & University Dr,3
-Raven Rd & University Dr,Raven Rd & University Dr to Campus Ave & University Dr,4
+Raven Rd & University Dr,Raven Rd & University Dr to Campus Ave & University Dr,3
 Raven Rd & University Dr,Raven Rd & University Dr to P3 & Raven Rd,0
-Raven Rd & University Dr,Raven Rd & University Dr to P4 & University Dr,0
-Raven Rd & University Dr,Raven Rd & University Dr to Bronson Ave & Raven Rd,0
+Raven Rd & University Dr,Raven Rd & University Dr to P4 & University Dr,1
 Stadium Way & University Dr,Stadium Way & University Dr to P4 & University Dr,0
 Stadium Way & University Dr,Stadium Way & University Dr to P5 & Stadium Way,1
 Stadium Way & University Dr,Stadium Way & University Dr to Roundabout,3

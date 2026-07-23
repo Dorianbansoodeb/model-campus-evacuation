@@ -8,6 +8,8 @@
 #include "include/data_structures/parking_lot_schedule.hpp"
 #include "include/coupled_models/carleton_university_campus.hpp"
 #include "include/coupled_models/carleton_university_campus_scenario_07.hpp"
+#include "include/coupled_models/carleton_university_campus_scenario_08.hpp"
+#include "include/coupled_models/carleton_university_campus_scenario_09.hpp"
 #include "include/io/load_data.hpp"
 
 using namespace cadmium;
@@ -22,7 +24,7 @@ int main(int argc, char* argv[]) {
         ("od-data", "Origin destination data file name", 
          cxxopts::value<std::string>()->default_value("input_data/od_data/simple_poll_results.csv"))
         ("m,max-sim-time", "Max simulation time", cxxopts::value<double>()->default_value("15000.0"))
-        ("scenario", "Scenario preset name (e.g. scenario_07)", cxxopts::value<std::string>()->default_value(""))
+        ("scenario", "Scenario preset name (e.g. scenario_07..scenario_10)", cxxopts::value<std::string>()->default_value(""))
         ("h,help", "Print usage")
         ;
 
@@ -41,6 +43,15 @@ int main(int argc, char* argv[]) {
     if (scenario == "scenario_07") {
         parkingLotSchedulesFile = "input_data/parking_lot_schedules/scenario_07.csv";
         odFile = "input_data/od_data/scenario_07_bronson.csv";
+    } else if (scenario == "scenario_08") {
+        parkingLotSchedulesFile = "input_data/parking_lot_schedules/scenario_08.csv";
+        odFile = "input_data/od_data/scenario_08_colonel_by.csv";
+    } else if (scenario == "scenario_09") {
+        parkingLotSchedulesFile = "input_data/parking_lot_schedules/scenario_09.csv";
+        odFile = "input_data/od_data/scenario_09_emergency_stadium.csv";
+    } else if (scenario == "scenario_10") {
+        parkingLotSchedulesFile = "input_data/parking_lot_schedules/scenario_10.csv";
+        odFile = "input_data/od_data/scenario_10_p6_colonel_by.csv";
     }
 
     // Load data
@@ -54,7 +65,16 @@ int main(int argc, char* argv[]) {
             loadRoutingOverrides("input_data/scenarios/scenario_07_routing_overrides.csv");
         model = std::make_shared<CarletonUniversityCampusScenario07Coupled>(
             "Carleton University Campus", schedules, odData, routingOverrides);
+    } else if (scenario == "scenario_08") {
+        model = std::make_shared<CarletonUniversityCampusScenario08Coupled>(
+            "Carleton University Campus", schedules, odData);
+    } else if (scenario == "scenario_09") {
+        std::vector<RoutingOverride> routingOverrides =
+            loadRoutingOverrides("input_data/scenarios/scenario_09_routing_overrides.csv");
+        model = std::make_shared<CarletonUniversityCampusScenario09Coupled>(
+            "Carleton University Campus", schedules, odData, routingOverrides);
     } else {
+        // scenario_10 and 01–06: baseline topology (s10 is OD-only: P6→Colonel By)
         model = std::make_shared<CarletonUniversityCampusCoupled>("Carleton University Campus", schedules, odData);
     }
     auto rootCoordinator = cadmium::RootCoordinator(model);
